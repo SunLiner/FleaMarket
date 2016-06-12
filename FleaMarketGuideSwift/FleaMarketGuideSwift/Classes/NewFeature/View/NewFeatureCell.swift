@@ -15,13 +15,19 @@ class NewFeatureCell: UICollectionViewCell {
     var coverImage : UIImage?
     {
         didSet{
-            imageView.image = coverImage
+            if let _ = coverImage {
+               imageView.image = coverImage
+            }
+            
         }
     }
     var moviePath : String?{
         didSet{
-            moviePlayer.contentURL = NSURL(fileURLWithPath: moviePath!, isDirectory: false)
-            moviePlayer.prepareToPlay()
+            if let iPath = moviePath {
+                moviePlayer.contentURL = NSURL(fileURLWithPath: iPath, isDirectory: false)
+                moviePlayer.prepareToPlay()
+            }
+            
         }
     }
     
