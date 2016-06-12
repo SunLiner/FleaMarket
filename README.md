@@ -1,6 +1,9 @@
 ## 项目blog地址
 <a href="http://www.jianshu.com/p/2b03d19f4acd">简书blog地址</a>
 
+## 效果图
+![咸鱼新特性](http://upload-images.jianshu.io/upload_images/1038348-8aca5e5b57b66949.gif?imageMogr2/auto-orient/strip)
+
 ## 用法
 OC用法:
 ```objc
