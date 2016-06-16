@@ -17,6 +17,9 @@
 @property (nonatomic, strong) UIPageControl *pageControl;
 /** 当前视频是否播放完成 */
 @property (nonatomic, assign, getter=isMovieFinished) BOOL movieFinished;
+/** 记录上一个播放的页面 */
+@property (nonatomic, assign) uint lastPage;
+
 @end
 
 @implementation NewFeatureViewController
@@ -114,9 +117,16 @@ static NSString * const reuseIdentifier = @"NewFeatureCell";
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     uint page = (scrollView.contentOffset.x / scrollView.bounds.size.width) + 0.5;
+    self.lastPage = page;
     self.pageControl.currentPage = page;
 }
 
+- (void)setLastPage:(uint)lastPage {
+    if (lastPage == _lastPage ) {
+        [self.collectionView reloadData];
+    }
+    _lastPage = lastPage;
+}
 @end
 
 
