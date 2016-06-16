@@ -59,7 +59,7 @@
     // 将要自动播放
     if (self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK)
     {
-        self.imageView.hidden = YES;
+        [self.imageView removeFromSuperview];
         
         [self.moviePlayer play];
     }
