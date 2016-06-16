@@ -63,7 +63,7 @@ class NewFeatureCell: UICollectionViewCell {
         // 取消下面的控制视图: 快进/暂停等...
         player.controlStyle = .None
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewFeatureCell.loadStatus), name: MPMoviePlayerLoadStateDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewFeatureCell.playerDisplayChange), name: MPMoviePlayerReadyForDisplayDidChangeNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(NewFeatureCell.playFinished), name: MPMoviePlayerPlaybackDidFinishNotification, object: nil)
         return player
  
@@ -71,12 +71,10 @@ class NewFeatureCell: UICollectionViewCell {
     
     // MARK: - private method
     
-    func loadStatus()
+    func playerDisplayChange()
     {
-        // 将要自动播放
-        if moviePlayer.loadState == .PlaythroughOK {
-            imageView.hidden = true
-            moviePlayer.play()
+        if moviePlayer.readyForDisplay {
+            moviePlayer.backgroundView.addSubview(imageView)
         }
     }
     
