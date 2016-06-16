@@ -8,7 +8,7 @@
 
 #import "NewFeatureCell.h"
 #import <MediaPlayer/MediaPlayer.h>
-
+#import <objc/runtime.h>
 
 
 @interface NewFeatureCell()
@@ -38,36 +38,34 @@
         MPMoviePlayerController *player = [[MPMoviePlayerController alloc] init];
         [player.view setFrame:self.contentView.bounds];
         // 设置自动播放
-        [player setShouldAutoplay:YES];
+        [player setShouldAutoplay:NO];
         // 设置源类型, 因为新特性一般都是播放本地的小视频, 所以设置源类型为File
         player.movieSourceType = MPMovieSourceTypeFile;
         // 取消下面的控制视图: 快进/暂停等...
         player.controlStyle = MPMovieControlStyleNone;
         [self.contentView addSubview:player.view];
         // 监听状态的改变
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadStatus) name:MPMoviePlayerLoadStateDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerDisplayChange) name:MPMoviePlayerReadyForDisplayDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playFinished) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
         _moviePlayer = player;
     }
     return _moviePlayer;
 }
 
-#pragma mark - private method
 
-- (void)loadStatus
+#pragma mark - private method
+- (void)playerDisplayChange
 {
-    // 将要自动播放
-    if (self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK)
-    {
-        self.imageView.hidden = YES;
-        
-        [self.moviePlayer play];
+    if (self.moviePlayer.readyForDisplay) {
+        [self.moviePlayer.backgroundView addSubview:self.imageView];
     }
 }
 
 - (void)playFinished
 {
+
     [[NSNotificationCenter defaultCenter] postNotificationName:PlayFinishedNotify object:nil];
+    
 }
 
 #pragma mark - setter
@@ -77,10 +75,13 @@
     _moviePath = [moviePath copy];
     
     // 停止之前的播放
-    [self.moviePlayer stop];
+//    [self.moviePlayer stop];
+    self.moviePlayer.view.backgroundColor = [UIColor clearColor];
     // 设置播放的路径
     self.moviePlayer.contentURL = [[NSURL alloc] initFileURLWithPath:moviePath];
     [self.moviePlayer prepareToPlay];
+    
+    [self.moviePlayer play];
 }
 
 
@@ -88,6 +89,10 @@
 {
     _startImage = startImage;
     self.imageView.image = startImage;
+//    self.imageView.hidden = YES;
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        self.imageView.hidden = NO;
+//    });
 }
 
 #pragma mark - lift circle
